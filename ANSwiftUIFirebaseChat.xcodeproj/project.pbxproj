@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA09521D2ACF8B110096738F /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09521C2ACF8B110096738F /* ImagePicker.swift */; };
 		EAD1DB3B2AC23698002A55D9 /* ANSwiftUIFirebaseChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD1DB3A2AC23698002A55D9 /* ANSwiftUIFirebaseChatApp.swift */; };
 		EAD1DB3D2AC23698002A55D9 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD1DB3C2AC23698002A55D9 /* LoginView.swift */; };
 		EAD1DB3F2AC23699002A55D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EAD1DB3E2AC23699002A55D9 /* Assets.xcassets */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EA09521C2ACF8B110096738F /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		EAD1DB372AC23698002A55D9 /* ANSwiftUIFirebaseChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ANSwiftUIFirebaseChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAD1DB3A2AC23698002A55D9 /* ANSwiftUIFirebaseChatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ANSwiftUIFirebaseChatApp.swift; sourceTree = "<group>"; };
 		EAD1DB3C2AC23698002A55D9 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 				EAD1DB3C2AC23698002A55D9 /* LoginView.swift */,
 				EAD1DB4E2AC52BF3002A55D9 /* GoogleService-Info.plist */,
 				EAD1DB3E2AC23699002A55D9 /* Assets.xcassets */,
+				EA09521C2ACF8B110096738F /* ImagePicker.swift */,
 				EAD1DB402AC23699002A55D9 /* ANSwiftUIFirebaseChat.entitlements */,
 				EAD1DB412AC23699002A55D9 /* Preview Content */,
 			);
@@ -154,6 +157,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA09521D2ACF8B110096738F /* ImagePicker.swift in Sources */,
 				EAD1DB3D2AC23698002A55D9 /* LoginView.swift in Sources */,
 				EAD1DB3B2AC23698002A55D9 /* ANSwiftUIFirebaseChatApp.swift in Sources */,
 			);

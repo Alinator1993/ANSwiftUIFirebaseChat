@@ -7,25 +7,29 @@
 
 import SwiftUI
 import Firebase
+import FirebaseStorage
 class FireBaseManager : NSObject{
     
     let auth : Auth
+    let storage: Storage
     static let shared = FireBaseManager()
     override init(){
         FirebaseApp.configure()
         self.auth = Auth.auth()
+        self.storage = Storage.storage()
         super.init()
     }
 }
 struct LoginView: View {
     
-
+    
     
     @State var isLoginMode = true
     @State var email = ""
     @State var password = ""
+    @State var shouldShowImagePicker = false
     
-
+    
     var body: some View {
         NavigationView{
             ScrollView{
@@ -39,10 +43,26 @@ struct LoginView: View {
                     
                     if !isLoginMode{
                         Button {
+                            shouldShowImagePicker.toggle()
                         } label: {
-                            Image(systemName: "person.fill")
-                                .font(.system(size: 64))
-                                .padding()
+                            
+                            VStack{
+                                if let image = self.image{
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width:128,height:128)
+                                        .cornerRadius(64)
+                                }
+                                else{
+                                    Image(systemName: "person.fill")
+                                        .font(.system(size: 64))
+                                        .padding()
+                                }
+                            }
+                            .overlay(RoundedRectangle(cornerRadius: 64)
+                                .stroke(Color.black, lineWidth: 3))
+                            
                         }
                         
                     }
@@ -70,16 +90,19 @@ struct LoginView: View {
                     Text(self.loginStatusMessage).foregroundColor(.red)
                 }
                 .padding()
-
-        }
+                
+            }
             .navigationTitle(isLoginMode ? "Log In" :  "Create Account")
             .background(Color(.init(white: 0, alpha: 0.05))
                 .ignoresSafeArea()
             )
         }
         .navigationViewStyle(.stack)
+        .fullScreenCover(isPresented: $shouldShowImagePicker, onDismiss: nil){
+            ImagePicker(image: $image)
+        }
     }
-    
+    @State var image: UIImage?
     private func handleAction() {
         if isLoginMode {
             
@@ -88,7 +111,7 @@ struct LoginView: View {
             
         } else {
             createNewAccount()
-//           print("Register a new account inside of Firebase Auth and then store image in Storage somehow....")
+            //           print("Register a new account inside of Firebase Auth and then store image in Storage somehow....")
         }
     }
     
@@ -108,7 +131,7 @@ struct LoginView: View {
     }
     
     private func createNewAccount(){
-//        FirebaseManager.shared.auth.createUser(withEmail: email, password: password){result, err in
+        //        FirebaseManager.shared.auth.createUser(withEmail: email, password: password){result, err in
         FireBaseManager.shared.auth.createUser(withEmail: email, password: password){result, err in
             if let err = err {
                 print("Failed to create user:", err)
@@ -118,13 +141,35 @@ struct LoginView: View {
             print("Successfully created User: \(result?.user.uid ?? "")")
             
             self.loginStatusMessage = "Successfully created User: \(result?.user.uid ?? "")"
+            self.persistImageToStorage()
         }
     }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginView()
-        //test
+    private func persistImageToStorage(){
+        guard let uid = FireBaseManager.shared.auth.currentUser?.uid
+        else{return}
+        let ref =  FireBaseManager.shared.storage.reference(withPath: uid)
+        guard let imageData = self.image?.jpegData(compressionQuality: 0.5) else {return }
+        ref.putData(imageData, metadata: nil) { metadata, err in
+            if let err = err{
+                self.loginStatusMessage = "Failed to Push Image to Storage \(err)"
+                return
+            }
+            ref.downloadURL{url,err in
+                if let err = err{
+                    self.loginStatusMessage = "Failed to Retrieve Download URL \(err)"
+                    return
+                }
+                self.loginStatusMessage = "Successfully Stored Image with URL: \(url?.absoluteString ?? "")"
+            }
+        }
+    }
+    
+    
+    
+    struct ContentView_Previews: PreviewProvider {
+        static var previews: some View {
+            LoginView()
+            //test
+        }
     }
 }
