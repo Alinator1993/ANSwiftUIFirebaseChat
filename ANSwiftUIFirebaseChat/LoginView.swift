@@ -12,11 +12,13 @@ class FireBaseManager : NSObject{
     
     let auth : Auth
     let storage: Storage
+    let firestore: Firestore
     static let shared = FireBaseManager()
     override init(){
         FirebaseApp.configure()
         self.auth = Auth.auth()
         self.storage = Storage.storage()
+        self.firestore = Firestore.firestore()
         super.init()
     }
 }
@@ -160,16 +162,32 @@ struct LoginView: View {
                     return
                 }
                 self.loginStatusMessage = "Successfully Stored Image with URL: \(url?.absoluteString ?? "")"
+                guard let url = url else{return}
+                storeUserInformation(imageProfileUrl: url)
             }
         }
     }
     
-    
-    
-    struct ContentView_Previews: PreviewProvider {
-        static var previews: some View {
-            LoginView()
-            //test
+    private func storeUserInformation(imageProfileUrl: URL){
+        guard let uid = FireBaseManager.shared.auth.currentUser?.uid else{
+            return
         }
+        let userData = ["email":self.email,"uid":uid,"profileImageUrl": imageProfileUrl.absoluteString]
+        FireBaseManager.shared.firestore.collection("users")
+            .document(uid).setData(userData){err  in
+                if let err = err{
+                    print(err)
+                    self.loginStatusMessage = "\(err)"
+                    return
+                }
+                print("Success")
+            }
     }
 }
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        LoginView()
+        //test
+    }
+}
+
